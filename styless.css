@@ -1,0 +1,141 @@
+/* General Reset and Body */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Helvetica', sans-serif;
+  background-color: #2C2F36; /* Dark gray background */
+  color: #E0E0E0; /* Light gray text for readability */
+  text-align: center;
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-family: 'Arial', sans-serif;
+}
+
+/* Intro Section */
+#intro {
+  background-color: #1E2A30; /* Darker shade for a professional look */
+  color: #F2F2F2; /* Light text */
+  padding: 60px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+#intro h1 {
+  font-size: 3.5em;
+  margin: 0;
+  color: #00BFAE; /* Teal color for main heading */
+}
+
+#intro p {
+  font-size: 1.2em;
+  margin: 20px 0;
+  color: #B0B0B0; /* Subtle gray for paragraph text */
+}
+
+#intro button {
+  background-color: #00BFAE; /* Teal button for a professional touch */
+  color: #fff;
+  padding: 18px 40px;
+  border: none;
+  font-size: 1.2em;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+#intro button:hover {
+  background-color: #008C75; /* Darker teal on hover */
+  transform: translateY(-3px);
+}
+
+/* Button Styles for Choices */
+button {
+  background-color: #4CAF50; /* Muted green color for decisions */
+  color: #fff;
+  padding: 18px 40px;
+  margin: 15px;
+  font-size: 1.2em;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+button:hover {
+  background-color: #388E3C; /* Darker green on hover */
+  transform: translateY(-3px);
+}
+
+/* Section Titles */
+h2 {
+  font-size: 2.5em;
+  color: #F9A825; /* Golden yellow for subheadings */
+}
+
+h3 {
+  font-size: 1.8em;
+  color: #FF7043; /* Soft red-orange for subheadings */
+}
+
+p {
+  font-size: 1.1em;
+  color: #B0B0B0;
+  line-height: 1.6;
+}
+
+/* Enhance Button Interactions */
+button {
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.25);
+  transform: translateY(-5px);
+}
+
+/* Final Message Section */
+#intro h1 {
+  color: #00BFAE; /* Light teal for the main message */
+}
+
+#intro p {
+  color: #B0B0B0; /* Subtle gray for the body text */
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  #intro h1 {
+    font-size: 2.5em;
+  }
+
+  button {
+    font-size: 1.1em;
+    padding: 12px 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  #intro {
+    padding: 40px 10px;
+  }
+
+  #intro h1 {
+    font-size: 2em;
+  }
+
+  button {
+    font-size: 1em;
+    padding: 10px 20px;
+  }
+}
