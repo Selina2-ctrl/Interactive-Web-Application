@@ -8,11 +8,35 @@
 </head>
 <body>
     <div id="persona-selection">
-        <h1>Choose Your Persona</h1>
-        <p>Select who you'd like to be on this skills development journey.</p>
+        <h1 style="color: #388E3C;">Choose Your Persona</h1>
+        <p style="max-width: 600px; margin: 0 auto 20px;">
+            Welcome to the Skills Development Journey. To begin, choose a persona that represents you best.
+            You’ll explore different career paths, learn about skill-building opportunities, and make choices
+            that shape your future. Don’t worry — there are no wrong answers!
+          </p>
         <button onclick="selectPersona('maria')">Maria</button>
         <button onclick="selectPersona('john')">John</button>
+
+        <div class="tooltip-below">
+            <span class="info-tooltip">Need help choosing? Hover here
+              <span class="tooltip-text-below">
+                Maria is curious and career-focused. John is motivated and practical.
+                Choose the one that fits your vibe – the journey is the same.
+              </span>
+            </span>
+          </div>
     </div>
+
+    <div id="theme-selector">
+        <label for="theme">Choose Theme:</label>
+        <select id="theme" onchange="changeTheme(this.value)">
+          <option value="default">Default</option>
+          <option value="ocean">Ocean Blue</option>
+          <option value="forest">Forest Green</option>
+          <option value="sunset">Sunset Orange</option>
+        </select>
+      </div>
+      
 
     <div id="intro" style="display:none;">
         <h1>Welcome to the Skills Development Journey!</h1>
@@ -21,5 +45,12 @@
     </div>
 
     <script src="scriptt.js"></script>
+
+    <p id="progress-text">Progress: 0%</p>
+
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+
 </body>
 </html>

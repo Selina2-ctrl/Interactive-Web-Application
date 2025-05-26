@@ -1,6 +1,8 @@
 let currentPersona = getCookie('chosenPersona') || ''; // Initialize from cookie
 let stateHistory = []; // Array to track navigation history
 let progress = 0; // Progress counter (capped at 100)
+let userChoices = [];
+
 
 class Character {
     constructor(name, description) {
@@ -58,9 +60,19 @@ function displayPersonaInfo() {
 }
 
 function updateProgress() {
-    progress = Math.min(progress + Math.round(Math.random() * 10), 100);
-    alert(`Your progress is now ${progress}%`);
+  progress = Math.min(progress + Math.round(Math.random() * 10), 100);
+  
+  const bar = document.getElementById("progress-bar");
+  if (bar) {
+      bar.style.width = `${progress}%`;
+  }
+
+  const progressText = document.getElementById("progress-text");
+  if (progressText) {
+      progressText.textContent = `Progress: ${progress}%`;
+  }
 }
+
 
 // Persona selection
 function selectPersona(personaName) {
@@ -75,16 +87,32 @@ function selectPersona(personaName) {
 }
 
 // Navigation functions
-function pushState(content) {
-    stateHistory.push(content);
+function pushState(htmlSnapshot) {
+  stateHistory.push(htmlSnapshot);
 }
 
 function goBack() {
-    if (stateHistory.length > 1) {
-        stateHistory.pop(); 
-        document.getElementById("intro").innerHTML = stateHistory[stateHistory.length - 1];
-    }
+  if (stateHistory.length > 1) {
+      stateHistory.pop(); // remove current
+      const previousState = stateHistory[stateHistory.length - 1];
+      document.getElementById("intro").innerHTML = previousState;
+      addBackButtonIfNeeded(); // reattach any listeners
+  }
 }
+
+function addBackButtonIfNeeded() {
+  const container = document.getElementById("intro");
+
+  // Prevent duplicate buttons
+  if (!container.querySelector('button[data-nav="back"]')) {
+      const backButton = createElement('button', 'Back', {
+          'data-nav': 'back'
+      });
+      backButton.onclick = goBack;
+      container.appendChild(backButton);
+  }
+}
+
 
 function goToHomePage() {
     if (confirm("Are you sure you want to go back? Your progress will be saved.")) {
@@ -95,6 +123,7 @@ function goToHomePage() {
 
 // Story flow functions
 function startStory() {
+    updateProgress();
     const currentDate = new Date().toLocaleDateString();
     const skills = ["Tech", "Further Studies", "Retail & Hospitality"];
     
@@ -131,12 +160,15 @@ if (currentPersona) {
 }
 
 function chooseSkill(skill) {
+  updateProgress();
   const container = document.getElementById("intro");
   container.innerHTML = '';
   
   let outcome = '';
   let options = [];
-  updateProgress();
+
+  userChoices.push(`Chose skill: ${skill}`);
+
 
   switch (skill) {
       case 'tech':
@@ -150,7 +182,7 @@ function chooseSkill(skill) {
       case 'further studies':
           outcome = `Furthering your studies is a good place to start, ${currentPersona}.`;
           options = [
-              { text: 'Cerifications', path: 'certifications' },
+              { text: 'Certifications', path: 'certifications' },
               { text: 'University', path: 'university' },
               { text: 'Higher Education', path: 'higher education' }
           ];
@@ -159,7 +191,7 @@ function chooseSkill(skill) {
           outcome = `This route is challenging but rewarding, ${currentPersona}.`;
           options = [
               { text: 'Retail Jobs', path: 'retail' },
-              { text: 'Hotel Hospitality', path: 'hospitlity' },
+              { text: 'Hotel Hospitality', path: 'hospitality' },
               { text: 'Marine Hospitality', path: 'hospitality' }
           ];
           break;
@@ -182,35 +214,83 @@ function chooseSkill(skill) {
 function learnMore(learningPath) {
   const container = document.getElementById("intro");
   container.innerHTML = '';
-  
+
   let message = '';
   updateProgress();
 
+  userChoices.push(`Chose learning method: ${learningPath}`);
+
   switch (learningPath) {
-      case 'onlineCourses':
-          message = `${currentPersona} chose online courses.`;
-          const form = createOnlineCourseForm();
-          container.appendChild(form);
-          break;
-      case 'bootcamp':
-          message = `A bootcamp will immerse ${currentPersona} in coding.`;
-          container.appendChild(createElement('p', message))
-          break;
-      
-      default:
-          message = "This path is still under development!";
+    case 'onlineCourses':
+      message = `${currentPersona} chose online courses.`;
+      container.appendChild(createElement('h2', 'Online Coding Courses'));
+      container.appendChild(createElement('p', message));
+      container.appendChild(createElement('p', "Start learning with flexible platforms:"));
+
+      container.appendChild(createLink('Coursera – Web Dev, Python, etc.', 'https://www.coursera.org'));
+      container.appendChild(createLink('Udemy – Affordable programming courses', 'https://www.udemy.com'));
+      container.appendChild(createLink('edX – University-level online courses', 'https://www.edx.org'));
+
+      const form = createOnlineCourseForm();
+      container.appendChild(form);
+      break;
+
+    case 'bootcamp':
+      message = `A coding bootcamp will immerse ${currentPersona} in intensive training.`;
+      container.appendChild(createElement('h2', 'Coding Bootcamp'));
+      container.appendChild(createElement('p', message));
+      container.appendChild(createElement('p', "Explore these well-known coding bootcamps:"));
+
+      container.appendChild(createLink('HyperionDev (South Africa)', 'https://www.hyperiondev.com'));
+      container.appendChild(createLink('Le Wagon (Worldwide)', 'https://www.lewagon.com'));
+      container.appendChild(createLink('CodeSpace Academy', 'https://www.codespace.co.za'));
+      break;
+
+    case 'aiBootcamp':
+      message = `An AI bootcamp will help ${currentPersona} master machine learning.`;
+      container.appendChild(createElement('h2', 'AI Bootcamp'));
+      container.appendChild(createElement('p', message));
+      container.appendChild(createElement('p', "Recommended bootcamps for AI training:"));
+
+      container.appendChild(createLink('DeepLearning.AI (via Coursera)', 'https://www.deeplearning.ai'));
+      container.appendChild(createLink('DataCamp – Practical ML/AI', 'https://www.datacamp.com'));
+      container.appendChild(createLink('The AI Guild Bootcamp', 'https://theguild.ai'));
+      break;
+
+    case 'aiOnlineCourses':
+      message = `Online AI courses provide great flexibility.`;
+      container.appendChild(createElement('h2', 'Online AI Courses'));
+      container.appendChild(createElement('p', message));
+      container.appendChild(createElement('p', "Start your AI journey with:"));
+
+      container.appendChild(createLink('Coursera – AI by Stanford (Andrew Ng)', 'https://www.coursera.org/learn/machine-learning'));
+      container.appendChild(createLink('Google AI Learning', 'https://ai.google/education'));
+      container.appendChild(createLink('edX – Artificial Intelligence Courses', 'https://www.edx.org/learn/artificial-intelligence'));
+      break;
+
+    default:
+      container.appendChild(createElement('p', "This learning path is under construction."));
   }
 
-  container.insertBefore(createElement('h2', message), container.firstChild);
-  
-  const finishButton = createElement('button', 'Finish Journey', {
-      onclick: 'finishStory()'
-  });
-  container.appendChild(finishButton);
-  
+  const finishBtn = createElement('button', 'Finish Journey');
+  finishBtn.onclick = finishStory;
+  container.appendChild(finishBtn);
+
   addNavigationButtons();
   pushState(container.innerHTML);
 }
+function createLink(text, url) {
+  const link = document.createElement('a');
+  link.textContent = text;
+  link.href = url;
+  link.target = '_blank';
+  link.style.display = 'block';
+  link.style.margin = '10px 0';
+  link.style.color = '#00BFAE'; // Matches your button/heading color
+  link.style.textDecoration = 'underline';
+  return link;
+}
+
 
 function createOnlineCourseForm() {
   const form = document.createElement('form');
@@ -243,41 +323,113 @@ function createOnlineCourseForm() {
 }
 
 function finishStory() {
+  progress = 100;
+  updateProgress();
   const container = document.getElementById("intro");
   container.innerHTML = '';
   
-  container.appendChild(createElement('h1', `Congratulations, ${currentPersona}!`));
-  container.appendChild(createElement('p', 
-      "By investing in your skills, you've taken the first step toward a better career."));
-  
+  const summaryTitle = createElement('h1', `Congratulations, ${currentPersona}!`);
+  const summaryMsg = createElement('p', "You've completed your skills journey. Here's a summary of your decisions:");
+
+  container.appendChild(summaryTitle);
+  container.appendChild(summaryMsg);
+
+  // Create and append the summary list
+  const summaryList = createElement('ul');
+  userChoices.forEach(choice => {
+    const item = createElement('li', choice);
+    summaryList.appendChild(item);
+  });
+  container.appendChild(summaryList);
+
+  // Add recommendation section (optional)
+  const opportunities = generateOpportunities(userChoices);
+  container.appendChild(createElement('h2', 'Potential Opportunities'));
+  const oppList = createElement('ul');
+  opportunities.forEach(opp => {
+    const item = createElement('li', opp);
+    oppList.appendChild(item);
+  });
+  container.appendChild(oppList);
+
+  // Add final buttons
   const restartButton = createElement('button', 'Start Again');
-  restartButton.onclick = () => location.reload();
-  container.appendChild(restartButton);
-  
-  const homeButton = createElement('button', 'Home');
-  homeButton.onclick = goToHomePage;
+restartButton.onclick = () => {
+  currentPersona = '';
+  userChoices = [];
+  progress = 0;
+  setCookie('chosenPersona', '', -1); // delete cookie
+  document.getElementById('intro').style.display = 'none';
+  document.getElementById('persona-selection').style.display = 'block';
+  document.getElementById('progress-text').textContent = 'Progress: 0%';
+};
+container.appendChild(restartButton);
+
+
+  const homeButton = createElement('button', 'Home', {
+    onclick: 'goToHomePage()'
+  });
   container.appendChild(homeButton);
-  
+
   pushState(container.innerHTML);
 }
+
+function generateOpportunities(choices) {
+  const opportunities = [];
+
+  if (choices.some(c => c.includes('tech'))) {
+    opportunities.push('Apply for internships in tech companies');
+    opportunities.push('Consider a short course in web or app development');
+  }
+
+  if (choices.some(c => c.includes('AI'))) {
+    opportunities.push('Join an AI bootcamp or take online machine learning courses');
+  }
+
+  if (choices.some(c => c.includes('design'))) {
+    opportunities.push('Apply to design schools or start freelancing');
+  }
+
+  if (choices.some(c => c.includes('certifications'))) {
+    opportunities.push('Earn a professional certification to boost your CV');
+  }
+
+  if (choices.some(c => c.includes('retail'))) {
+    opportunities.push('Apply for entry-level retail jobs or management trainee programs');
+  }
+
+  if (choices.some(c => c.includes('hospitality'))) {
+    opportunities.push('Explore hotel or cruise job openings locally or abroad');
+  }
+
+  return opportunities.length > 0 ? opportunities : ['Explore career portals to find your next opportunity.'];
+}
+
 
 // Helper function for consistent navigation buttons
 function addNavigationButtons() {
   const container = document.getElementById("intro");
-  
-  const backButton = createElement('button', 'Back');
+
+  const backButton = createElement('button', 'Back', {
+      'data-nav': 'back'
+  });
   backButton.onclick = goBack;
   container.appendChild(backButton);
-  
+
   const homeButton = createElement('button', 'Home');
   homeButton.onclick = goToHomePage;
   container.appendChild(homeButton);
 }
 
+
 function choosePath(path) {
+  updateProgress();
+
   console.log(`choosePath('${path}') was called!`);
   const container = document.getElementById("intro");
   container.innerHTML = '';
+
+  userChoices.push(`Explored path: ${path}`);
 
   switch (path) {
     case 'coding':
@@ -316,6 +468,9 @@ function choosePath(path) {
         designCollegesList.appendChild(listItem);
       });
       container.appendChild(designCollegesList);
+
+      container.appendChild(createElement('button', 'Finish Journey', { onclick: 'finishStory()' }));
+
       break;
     case 'certifications':
       container.appendChild(createElement('h2', 'Available Certifications'));
@@ -331,6 +486,10 @@ function choosePath(path) {
         certificationsUl.appendChild(listItem);
       });
       container.appendChild(certificationsUl);
+      
+      const finishBtn = createElement('button', 'Finish Journey', { onclick: 'finishStory()' });
+      container.appendChild(finishBtn);
+
       break;
     case 'university':
       container.appendChild(createElement('h2', 'Universities in South Africa'));
@@ -346,6 +505,9 @@ function choosePath(path) {
         universitiesUl.appendChild(listItem);
       });
       container.appendChild(universitiesUl);
+
+      container.appendChild(createElement('button', 'Finish Journey', { onclick: 'finishStory()' }));
+
       break;
     case 'higher education':
       container.appendChild(createElement('h2', 'Higher Education Institutions in South Africa'));
@@ -361,6 +523,9 @@ function choosePath(path) {
         higherEducationUl.appendChild(listItem);
       });
       container.appendChild(higherEducationUl);
+
+      container.appendChild(createElement('button', 'Finish Journey', { onclick: 'finishStory()' }));
+
       break;
     case 'retail':
       container.appendChild(createElement('h2', 'Retail Job Opportunities'));
@@ -369,8 +534,11 @@ function choosePath(path) {
         target: '_blank'
       });
       container.appendChild(indeedRetailLink);
+
+      container.appendChild(createElement('button', 'Finish Journey', { onclick: 'finishStory()' }));
+
       break;
-    case 'hospitlity': // Hotel Hospitality
+    case 'hospitality': // Hotel Hospitality
       container.appendChild(createElement('h2', 'Hotels in South Africa'));
       const hotelsSA = [
         "The Table Bay Hotel, Cape Town",
@@ -384,6 +552,9 @@ function choosePath(path) {
         hotelsUl.appendChild(listItem);
       });
       container.appendChild(hotelsUl);
+
+      container.appendChild(createElement('button', 'Finish Journey', { onclick: 'finishStory()' }));
+
       break;
     case 'hospitality': // Marine Hospitality
       container.appendChild(createElement('h2', 'Cruise Ships in South Africa'));
@@ -398,6 +569,9 @@ function choosePath(path) {
         cruisesUl.appendChild(listItem);
       });
       container.appendChild(cruisesUl);
+
+      container.appendChild(createElement('button', 'Finish Journey', { onclick: 'finishStory()' }));
+
       break;
     case 'further studies':
       container.appendChild(createElement('h2', 'Explore Further Studies'));
@@ -436,6 +610,53 @@ function choosePath(path) {
   addNavigationButtons();
   pushState(container.innerHTML);
 }
+
+function changeTheme(theme) {
+  const root = document.documentElement;
+
+  switch (theme) {
+    case 'default':
+      root.style.setProperty('--bg-color', '#2C2F36');
+      root.style.setProperty('--text-color', '#E0E0E0');
+      root.style.setProperty('--button-bg', '#4CAF50');
+      root.style.setProperty('--button-hover', '#388E3C');
+      root.style.setProperty('--accent-color', '#00BFAE');
+      break;
+    case 'ocean':
+      root.style.setProperty('--bg-color', '#001f3f');
+      root.style.setProperty('--text-color', '#ffffff');
+      root.style.setProperty('--button-bg', '#0074D9');
+      root.style.setProperty('--button-hover', '#005fa3');
+      root.style.setProperty('--accent-color', '#7FDBFF');
+      break;
+    case 'forest':
+      root.style.setProperty('--bg-color', '#0b3d0b');
+      root.style.setProperty('--text-color', '#e0ffe0');
+      root.style.setProperty('--button-bg', '#2E8B57');
+      root.style.setProperty('--button-hover', '#1e5e3e');
+      root.style.setProperty('--accent-color', '#66bb6a');
+      break;
+    case 'sunset':
+      root.style.setProperty('--bg-color', '#3e1f1f');
+      root.style.setProperty('--text-color', '#fff5e6');
+      root.style.setProperty('--button-bg', '#FF5733');
+      root.style.setProperty('--button-hover', '#c63c1a');
+      root.style.setProperty('--accent-color', '#FFC300');
+      break;
+  }
+
+  // Save user's preference (optional)
+  localStorage.setItem('selectedTheme', theme);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  const savedTheme = localStorage.getItem('selectedTheme');
+  if (savedTheme) {
+    document.getElementById('theme').value = savedTheme;
+    changeTheme(savedTheme);
+  }
+});
+
 
 document.addEventListener('DOMContentLoaded', function() {
   if (currentPersona) {

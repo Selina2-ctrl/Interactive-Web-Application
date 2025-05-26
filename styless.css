@@ -5,16 +5,28 @@
   box-sizing: border-box;
 }
 
+:root {
+  --bg-color: #2C2F36;
+  --text-color: #E0E0E0;
+  --button-bg: #4CAF50;
+  --button-hover: #388E3C;
+  --accent-color: #00BFAE;
+}
+
 body {
   font-family: 'Helvetica', sans-serif;
-  background-color: #2C2F36; /* Dark gray background */
-  color: #E0E0E0; /* Light gray text for readability */
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.90), rgba(0, 0, 0, 0.90)),
+    url('money-2696219_1280.jpg') no-repeat center center fixed;
+  background-size: cover;
   text-align: center;
   line-height: 1.6;
+  color: var(--text-color);
 }
 
 h1, h2, h3 {
   font-family: 'Arial', sans-serif;
+  color: var(--accent-color);
 }
 
 /* Intro Section */
@@ -56,7 +68,6 @@ h1, h2, h3 {
 
 /* Button Styles for Choices */
 button {
-  background-color: #4CAF50; /* Muted green color for decisions */
   color: #fff;
   padding: 18px 40px;
   margin: 15px;
@@ -65,17 +76,19 @@ button {
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.3s;
+  background-color: var(--button-bg);
+
 }
 
 button:hover {
-  background-color: #388E3C; /* Darker green on hover */
   transform: translateY(-3px);
+  background-color: var(--button-hover);
 }
 
 /* Section Titles */
 h2 {
   font-size: 2.5em;
-  color: #F9A825; /* Golden yellow for subheadings */
+  color: var(--accent-color);
 }
 
 h3 {
@@ -93,11 +106,13 @@ p {
 button {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
+  background-color: var(--button-bg);
 }
 
 button:hover {
   box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.25);
   transform: translateY(-5px);
+  background-color: var(--button-bg);
 }
 
 /* Final Message Section */
@@ -138,4 +153,68 @@ button:hover {
     font-size: 1em;
     padding: 10px 20px;
   }
+
+  #progress-container {
+    width: 100%;
+    background-color: #555;
+    height: 20px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+  }
+  
+  #progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: #00BFAE;
+    transition: width 0.4s ease;
+  }
+
+  #persona-selection p {
+    font-size: 1.1em;
+    line-height: 1.5;
+    color: #CCCCCC; /* softer light gray */
+    max-width: 600px;
+    margin: 0 auto 20px;
+  }
+  
+  .tooltip-below {
+    margin-top: 20px;
+  }
+  
+  .info-tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    color: #00BFAE;
+    font-size: 1em;
+  }
+  
+  .tooltip-text-below {
+    visibility: hidden;
+    width: 260px;
+    background-color: #333;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    top: 125%; /* Below the text */
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  .info-tooltip:hover .tooltip-text-below {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  h1, h2 {
+    color: var(--accent-color);
+  }
+  
 }
