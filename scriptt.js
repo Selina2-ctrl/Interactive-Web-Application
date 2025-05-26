@@ -1,3 +1,5 @@
+// Force reset persona selection
+setCookie('chosenPersona', '', -1); // Expire the cookie immediately
 let currentPersona = getCookie('chosenPersona') || ''; // Initialize from cookie
 let stateHistory = []; // Array to track navigation history
 let progress = 0; // Progress counter (capped at 100)
